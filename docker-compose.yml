@@ -1,0 +1,29 @@
+version: '3.9'
+networks:
+    demo_sqli:
+services:
+    web:
+        build: ./app
+        container_name: web_demo
+        depends_on:
+            - db
+        ports:
+            - "8080:8080"
+        networks:
+            - demo_sqli
+    db:
+        image: mysql:8
+        restart: always
+        ports:
+             - "3307:3306"
+        environment:
+            MYSQL_USER: demo
+            MYSQL_PASSWORD: root
+            MYSQL_DATABASE: demo_sqli
+        volumes:
+            - ./db/:/var/lib/mysql
+        networks:
+            - demo_sqli
+
+          
+            

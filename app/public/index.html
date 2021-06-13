@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css">
+    <title>DEMO SQLI</title>
+</head>
+
+<body>
+    <div class="container mt-5" id="app">
+        <div v-if="!login">
+            <div class="block">
+                <input class="input is-link" v-model="username" type="text" placeholder="username">
+            </div>
+            <div class="block">
+                <input class="input is-link" v-model="password" type="password" placeholder="password">
+            </div>
+            <div class="buttons">
+                <button @click="submitLogin" class="button is-primary">Login</button>
+            </div>
+        </div>
+        <div v-else>
+            {{data}}
+        </div>
+    </div>
+</body>
+
+
+</html>
+<script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
+<script type="application/javascript">
+    const App = {
+        data() {
+            return {
+                login: false,
+                username: '',
+                password: '',
+                data: ''
+            }
+        },
+        methods: {
+            submitLogin() {
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `username=${encodeURIComponent(this.username)}&password=${this.password}`
+                }).then(res => res.json())
+                    .then(res => {
+                        if (res.status) {
+                            this.login = true
+                        }
+                        else alert(res.message)
+                    })
+            },
+            fetchData() {
+                fetch('/get', {
+                    method: 'GET'
+                })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.status) {
+                            this.data = res.message
+                            this.login = true
+                        }
+                    })
+            }
+        },
+        mounted() {
+            this.fetchData()
+        },
+        watch: {
+            login() {
+                this.fetchData()
+            }
+        }
+    }
+    Vue.createApp(App).mount('#app')
+</script>
