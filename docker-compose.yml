@@ -1,6 +1,8 @@
 version: '3.9'
 networks:
     demo_sqli:
+volumes:
+    db_data:
 services:
     web:
         build: ./app
@@ -13,15 +15,19 @@ services:
             - demo_sqli
     db:
         image: mysql:8
+        container_name: mysql
         restart: always
         ports:
              - "3307:3306"
         environment:
             MYSQL_USER: demo
             MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
             MYSQL_DATABASE: demo_sqli
         volumes:
-            - ./db/:/var/lib/mysql
+            - db_data:/var/lib/mysql
+            - ./db:/docker-entrypoint-initdb.d
         networks:
             - demo_sqli
 

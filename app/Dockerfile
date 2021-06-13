@@ -1,4 +1,4 @@
-FROM node:14.17-alpine
+FROM node:14.17
 
 WORKDIR /app
 
@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 8080
 
-CMD ['npm', 'start']
+CMD ["node", "./src/serve.js"]
